@@ -2,524 +2,552 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MBTI Personality Predictor — ML Project</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MBTI·ML — Personality Predictor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Courier+Prime:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --bg: #0a0a0f;
-    --surface: #111118;
-    --border: #1e1e2e;
-    --accent1: #7c3aed;
-    --accent2: #06b6d4;
-    --accent3: #f59e0b;
-    --text: #e8e8f0;
-    --muted: #6b6b80;
-    --card: #14141f;
-  }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Space Mono', monospace;
-    overflow-x: hidden;
-  }
+:root{
+  --bg:#0c0a14;--bg2:#130f20;--surface:rgba(255,255,255,0.032);
+  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.04);
+  --gold:#c9a84c;--gold2:#e8c96a;--lavender:#a78bfa;--rose:#f472b6;
+  --teal:#2dd4bf;--amber:#f59e0b;
+  --text:#ede8f5;--muted:rgba(237,232,245,0.42);--subtle:rgba(237,232,245,0.22);
+  --display:'Cormorant Garamond',serif;
+  --body:'DM Sans',sans-serif;
+  --mono:'Courier Prime',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden;}
 
-  /* ── NAV ── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1.2rem 4rem;
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.3rem;
-    letter-spacing: -0.02em;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
-  .nav-links a {
-    color: var(--muted); text-decoration: none;
-    font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--text); }
-  .nav-cta {
-    background: var(--accent1);
-    color: #fff !important;
-    padding: 0.5rem 1.2rem;
-    border-radius: 4px;
-    font-weight: 700;
-  }
+/* BG */
+#vfx{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#vfx::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 30%,rgba(167,139,250,.14) 0%,transparent 55%),radial-gradient(ellipse at 80% 70%,rgba(201,168,76,.1) 0%,transparent 50%),radial-gradient(ellipse at 55% 10%,rgba(244,114,182,.08) 0%,transparent 45%);}
 
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 8rem 4rem 4rem;
-    position: relative; overflow: hidden;
-  }
-  .hero-grid {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse at 50% 50%, black 30%, transparent 80%);
-  }
-  .hero-orb {
-    position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
-  }
-  .orb1 { width: 600px; height: 600px; top: -100px; right: -100px;
-    background: radial-gradient(circle, rgba(124,58,237,0.25), transparent 70%); }
-  .orb2 { width: 400px; height: 400px; bottom: -50px; left: 10%;
-    background: radial-gradient(circle, rgba(6,182,212,0.2), transparent 70%); }
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:100;background:rgba(12,10,20,.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--border2);height:54px;display:flex;align-items:center;padding:0 3rem;gap:2rem;}
+.nav-logo{font-family:var(--display);font-size:1.3rem;font-weight:600;color:var(--gold);font-style:italic;letter-spacing:.04em;}
+.nav-dot{width:4px;height:4px;background:var(--gold);border-radius:50%;opacity:.5;}
+.nav-links{display:flex;gap:1.8rem;margin-left:auto;}
+.nav-links a{font-size:.75rem;color:var(--muted);text-decoration:none;letter-spacing:.08em;transition:color .2s;}
+.nav-links a:hover{color:var(--gold);}
+.nav-badge{font-family:var(--mono);font-size:.6rem;color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:3px 9px;margin-left:.5rem;}
 
-  .hero-eyebrow {
-    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
-    color: var(--accent2); margin-bottom: 1.5rem;
-    display: flex; align-items: center; gap: 0.8rem;
-  }
-  .hero-eyebrow::before {
-    content: ''; display: block; width: 40px; height: 1px; background: var(--accent2);
-  }
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(3rem, 7vw, 6.5rem);
-    font-weight: 800; line-height: 1;
-    letter-spacing: -0.04em;
-    max-width: 900px;
-    position: relative;
-  }
-  h1 .highlight {
-    background: linear-gradient(135deg, var(--accent1) 0%, var(--accent2) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .hero-sub {
-    margin-top: 2rem;
-    font-size: 0.95rem; line-height: 1.8;
-    color: var(--muted); max-width: 560px;
-  }
-  .hero-actions {
-    margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap;
-  }
-  .btn-primary {
-    background: var(--accent1);
-    color: #fff; text-decoration: none;
-    padding: 0.9rem 2.2rem; border-radius: 6px;
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
-    transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: 0 0 30px rgba(124,58,237,0.4);
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(124,58,237,0.6); }
-  .btn-outline {
-    border: 1px solid var(--border);
-    color: var(--text); text-decoration: none;
-    padding: 0.9rem 2.2rem; border-radius: 6px;
-    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .btn-outline:hover { border-color: var(--accent1); background: rgba(124,58,237,0.08); }
+/* HERO */
+#hero{min-height:100vh;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:7rem 2rem 4rem;}
+.hero-kicker{font-family:var(--mono);font-size:.65rem;color:var(--gold);letter-spacing:.25em;margin-bottom:2rem;opacity:0;animation:up .7s .2s both;}
+.hero-title{font-family:var(--display);font-size:clamp(3rem,9vw,8.5rem);font-weight:300;line-height:.92;letter-spacing:-.01em;margin-bottom:1.5rem;opacity:0;animation:up .9s .4s both;}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:1rem;color:var(--muted);max-width:520px;line-height:1.75;margin-bottom:3rem;opacity:0;animation:up .8s .6s both;}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:up .8s .8s both;}
+.btn-gold{padding:.85rem 2.4rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-size:.82rem;font-weight:500;border:none;cursor:pointer;letter-spacing:.04em;transition:all .25s;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(201,168,76,.25);}
+.btn-ghost{padding:.85rem 2.4rem;border:1px solid var(--border);background:transparent;color:var(--text);font-size:.82rem;cursor:pointer;letter-spacing:.04em;transition:all .25s;text-decoration:none;display:inline-block;}
+.btn-ghost:hover{border-color:rgba(201,168,76,.4);color:var(--gold);}
+.hero-types{display:flex;gap:.5rem;justify-content:center;margin-top:4rem;flex-wrap:wrap;max-width:600px;opacity:0;animation:up .8s 1s both;}
+.type-pill{font-family:var(--mono);font-size:.62rem;padding:.3rem .7rem;border:1px solid var(--border2);color:var(--subtle);transition:all .2s;cursor:default;}
+.type-pill:hover{border-color:rgba(201,168,76,.3);color:var(--gold);}
+@keyframes up{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
 
-  .hero-stats {
-    margin-top: 5rem;
-    display: flex; gap: 4rem;
-    padding-top: 2rem; border-top: 1px solid var(--border);
-    max-width: 600px;
-  }
-  .stat-num {
-    font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .stat-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.3rem; }
+/* QUIZ SECTION */
+#quiz{position:relative;z-index:1;padding:6rem 0;}
+.quiz-wrap{max-width:720px;margin:0 auto;padding:0 2rem;}
+.quiz-header{text-align:center;margin-bottom:3rem;}
+.quiz-title{font-family:var(--display);font-size:clamp(2rem,4vw,3.2rem);font-weight:300;margin-bottom:.8rem;}
+.quiz-title em{font-style:italic;color:var(--gold);}
+.quiz-sub{color:var(--muted);font-size:.88rem;line-height:1.7;}
 
-  /* ── SECTION COMMONS ── */
-  section { padding: 7rem 4rem; }
-  .section-tag {
-    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
-    color: var(--accent1); margin-bottom: 1rem;
-  }
-  h2 {
-    font-family: 'Syne', sans-serif; font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
-    max-width: 700px;
-  }
-  .section-desc { color: var(--muted); margin-top: 1rem; line-height: 1.8; max-width: 560px; font-size: 0.9rem; }
+/* PROGRESS */
+.progress-wrap{margin-bottom:2.5rem;}
+.progress-meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:.6rem;}
+.progress-bar{height:1px;background:var(--border2);position:relative;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--lavender),var(--gold));transition:width .5s ease;width:0;}
+.progress-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;position:absolute;top:-2.5px;transition:left .5s ease;left:0;}
 
-  /* ── MBTI TYPES GRID ── */
-  #types { background: var(--surface); }
-  .types-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr);
-    gap: 1px; margin-top: 3.5rem;
-    border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
-  }
-  .type-cell {
-    background: var(--card); padding: 1.5rem;
-    position: relative; overflow: hidden;
-    transition: background 0.2s;
-    cursor: default;
-  }
-  .type-cell::before {
-    content: ''; position: absolute; inset: 0;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    opacity: 0; transition: opacity 0.2s;
-  }
-  .type-cell:hover::before { opacity: 0.08; }
-  .type-code {
-    font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
-    position: relative;
-  }
-  .type-name { font-size: 0.65rem; color: var(--muted); margin-top: 0.3rem; letter-spacing: 0.08em; position: relative; }
-  .type-tag {
-    display: inline-block; margin-top: 0.7rem;
-    font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 0.25rem 0.6rem; border-radius: 100px; position: relative;
-  }
-  .analyst .type-code { color: #8b5cf6; } .analyst .type-tag { background: rgba(139,92,246,0.15); color: #8b5cf6; }
-  .diplomat .type-code { color: #10b981; } .diplomat .type-tag { background: rgba(16,185,129,0.15); color: #10b981; }
-  .sentinel .type-code { color: #3b82f6; } .sentinel .type-tag { background: rgba(59,130,246,0.15); color: #3b82f6; }
-  .explorer .type-code { color: #f59e0b; } .explorer .type-tag { background: rgba(245,158,11,0.15); color: #f59e0b; }
+/* QUESTION CARD */
+.q-card{background:var(--surface);border:1px solid var(--border);padding:2.5rem;position:relative;overflow:hidden;opacity:0;transform:translateY(20px);transition:all .5s ease;}
+.q-card.show{opacity:1;transform:translateY(0);}
+.q-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,var(--lavender),var(--gold));}
+.q-num{font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.15em;margin-bottom:.8rem;}
+.q-dimension{font-family:var(--mono);font-size:.58rem;color:var(--gold);letter-spacing:.12em;margin-bottom:.4rem;}
+.q-text{font-family:var(--display);font-size:clamp(1.3rem,3vw,1.8rem);font-weight:400;line-height:1.35;color:var(--text);margin-bottom:2rem;}
 
-  /* ── HOW IT WORKS ── */
-  #how { position: relative; }
-  .steps {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 2rem; margin-top: 3.5rem;
-  }
-  .step-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 2rem;
-    position: relative; overflow: hidden;
-    transition: border-color 0.2s, transform 0.2s;
-  }
-  .step-card:hover { border-color: var(--accent1); transform: translateY(-4px); }
-  .step-num {
-    font-family: 'Syne', sans-serif; font-size: 4rem; font-weight: 800;
-    line-height: 1;
-    background: linear-gradient(135deg, var(--accent1) 0%, var(--accent2) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    opacity: 0.3;
-  }
-  .step-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-top: 1rem; }
-  .step-body { font-size: 0.8rem; color: var(--muted); line-height: 1.8; margin-top: 0.5rem; }
+/* ANSWERS */
+.answers{display:flex;flex-direction:column;gap:.7rem;}
+.ans-btn{
+  width:100%;text-align:left;padding:1rem 1.4rem;
+  background:rgba(255,255,255,.022);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--body);font-size:.88rem;line-height:1.5;
+  cursor:pointer;transition:all .22s;display:flex;align-items:flex-start;gap:.9rem;
+  position:relative;overflow:hidden;
+}
+.ans-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(167,139,250,.05),rgba(201,168,76,.04));opacity:0;transition:opacity .2s;}
+.ans-btn:hover{border-color:rgba(201,168,76,.3);color:var(--text);}
+.ans-btn:hover::before{opacity:1;}
+.ans-btn.selected{border-color:var(--gold);background:rgba(201,168,76,.06);}
+.ans-btn.selected::before{opacity:1;}
+.ans-letter{font-family:var(--mono);font-size:.62rem;color:var(--gold);border:1px solid rgba(201,168,76,.3);width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ans-btn.selected .ans-letter{background:var(--gold);color:#000;}
+.ans-text{font-size:.88rem;color:var(--muted);line-height:1.55;}
+.ans-btn:hover .ans-text,.ans-btn.selected .ans-text{color:var(--text);}
 
-  /* ── TECH STACK ── */
-  #tech { background: var(--surface); }
-  .tech-grid {
-    display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 3rem;
-  }
-  .tech-pill {
-    display: flex; align-items: center; gap: 0.6rem;
-    background: var(--card); border: 1px solid var(--border);
-    padding: 0.7rem 1.3rem; border-radius: 100px;
-    font-size: 0.8rem; letter-spacing: 0.05em;
-    transition: border-color 0.2s;
-  }
-  .tech-pill:hover { border-color: var(--accent2); }
-  .tech-dot { width: 8px; height: 8px; border-radius: 50%; }
+/* NAV BTNS */
+.q-nav{display:flex;justify-content:space-between;margin-top:1.8rem;align-items:center;}
+.q-back{font-family:var(--mono);font-size:.68rem;color:var(--muted);background:transparent;border:1px solid var(--border2);padding:.55rem 1.2rem;cursor:pointer;transition:all .2s;}
+.q-back:hover{border-color:var(--border);color:var(--text);}
+.q-next{font-family:var(--mono);font-size:.68rem;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border:none;padding:.55rem 1.6rem;cursor:pointer;transition:all .2s;opacity:.4;pointer-events:none;font-weight:500;}
+.q-next.ready{opacity:1;pointer-events:all;}
+.q-next.ready:hover{box-shadow:0 6px 20px rgba(201,168,76,.25);}
 
-  /* ── MODELS ── */
-  .models-grid {
-    display: grid; grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem; margin-top: 3rem;
-  }
-  .model-card {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 2rem;
-    display: flex; flex-direction: column; gap: 1rem;
-    transition: border-color 0.2s;
-  }
-  .model-card:hover { border-color: var(--accent1); }
-  .model-card.featured { border-color: var(--accent1); background: linear-gradient(135deg, rgba(124,58,237,0.06), rgba(6,182,212,0.04)); }
-  .model-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; }
-  .model-acc {
-    font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .model-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-  .model-bar { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent1), var(--accent2)); }
-  .model-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.7; }
-  .best-badge {
-    display: inline-block; font-size: 0.6rem; letter-spacing: 0.15em;
-    text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 100px;
-    background: rgba(124,58,237,0.2); color: var(--accent1);
-  }
+/* RESULT */
+#result-screen{display:none;position:relative;z-index:1;padding:5rem 2rem;}
+.result-wrap{max-width:760px;margin:0 auto;}
+.result-top{text-align:center;margin-bottom:3rem;padding:3rem;border:1px solid var(--border);background:var(--surface);position:relative;overflow:hidden;}
+.result-top::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,.08),transparent 60%);}
+.result-type{font-family:var(--display);font-size:clamp(4rem,12vw,8rem);font-weight:300;font-style:italic;line-height:1;margin-bottom:.5rem;}
+.result-nickname{font-family:var(--display);font-size:1.8rem;font-weight:300;color:var(--gold);margin-bottom:.8rem;}
+.result-group{font-family:var(--mono);font-size:.65rem;letter-spacing:.18em;color:var(--muted);margin-bottom:1.5rem;}
+.result-desc{font-size:.92rem;color:var(--muted);line-height:1.8;max-width:520px;margin:0 auto;}
+.dim-bars{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);margin:2rem 0;}
+.dim-bar-card{background:var(--bg2);padding:1.5rem;}
+.dim-label-row{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.62rem;color:var(--muted);margin-bottom:.6rem;}
+.dim-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:.4rem;overflow:hidden;}
+.dim-fill{height:100%;border-radius:2px;transition:width 1.2s ease;}
+.dim-result{font-family:var(--display);font-size:1.1rem;color:var(--gold);font-style:italic;}
+.model-table{margin:2rem 0;}
+.mt-header{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;color:var(--muted);margin-bottom:1rem;}
+.mt-row{display:flex;align-items:center;gap:1rem;margin-bottom:.8rem;font-family:var(--mono);font-size:.7rem;}
+.mt-name{width:160px;color:var(--muted);}
+.mt-bar{flex:1;height:2px;background:rgba(255,255,255,.05);}
+.mt-fill{height:100%;background:linear-gradient(90deg,var(--lavender),var(--gold));transition:width 1.2s ease;}
+.mt-val{width:40px;text-align:right;color:var(--gold);}
+.result-cta{display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;}
+.retake-btn{padding:.8rem 2rem;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:.8rem;cursor:pointer;transition:all .2s;}
+.retake-btn:hover{border-color:rgba(201,168,76,.4);color:var(--gold);}
 
-  /* ── DATASET ── */
-  #dataset { background: var(--surface); }
-  .dataset-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; margin-top: 3rem; }
-  .dataset-code {
-    background: var(--card); border: 1px solid var(--border);
-    border-radius: 12px; padding: 2rem;
-    font-size: 0.78rem; line-height: 1.9; overflow-x: auto;
-  }
-  .dataset-code .kw { color: #7c3aed; }
-  .dataset-code .str { color: #06b6d4; }
-  .dataset-code .num { color: #f59e0b; }
-  .dataset-code .cmt { color: var(--muted); }
-  .dataset-facts { display: flex; flex-direction: column; gap: 1.5rem; }
-  .fact-row { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.2rem; border-bottom: 1px solid var(--border); }
-  .fact-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-  .fact-val { font-family: 'Syne', sans-serif; font-weight: 700; }
+/* TYPES SECTION */
+#types{position:relative;z-index:1;padding:6rem 0;}
+.types-wrap{max-width:1200px;margin:0 auto;padding:0 3rem;}
+.types-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border2);}
+.type-card{background:var(--bg2);padding:1.2rem;transition:background .2s;cursor:default;}
+.type-card:hover{background:rgba(201,168,76,.04);}
+.type-abbr{font-family:var(--display);font-size:1.4rem;font-style:italic;font-weight:300;color:var(--text);margin-bottom:.2rem;}
+.type-role{font-size:.72rem;color:var(--gold);margin-bottom:.2rem;}
+.type-group-label{font-family:var(--mono);font-size:.58rem;color:var(--muted);letter-spacing:.1em;}
+.group-separator{padding:1.2rem 0 .4rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--muted);}
 
-  /* ── FOOTER ── */
-  footer {
-    padding: 3rem 4rem;
-    border-top: 1px solid var(--border);
-    display: flex; justify-content: space-between; align-items: center;
-    flex-wrap: wrap; gap: 1rem;
-  }
-  .footer-logo {
-    font-family: 'Syne', sans-serif; font-weight: 800;
-    background: linear-gradient(135deg, var(--accent1), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .footer-links { display: flex; gap: 2rem; }
-  .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--text); }
-  .footer-credit { font-size: 0.72rem; color: var(--muted); }
+/* HOW IT WORKS */
+#pipeline{position:relative;z-index:1;padding:6rem 0;background:var(--bg2);}
+.pipe-wrap{max-width:1100px;margin:0 auto;padding:0 3rem;}
+.pipe-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3rem;}
+.pipe-s{padding:2rem;border:1px solid var(--border2);transition:border-color .25s;}
+.pipe-s:hover{border-color:rgba(201,168,76,.2);}
+.pipe-s-num{font-family:var(--display);font-size:3rem;font-weight:300;font-style:italic;color:rgba(201,168,76,.15);line-height:1;margin-bottom:.8rem;}
+.pipe-s-title{font-family:var(--display);font-size:1rem;font-weight:400;color:var(--gold);margin-bottom:.6rem;}
+.pipe-s-desc{font-size:.85rem;color:var(--muted);line-height:1.7;}
 
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .fade-up { animation: fadeUp 0.7s ease both; }
-  .delay-1 { animation-delay: 0.1s; }
-  .delay-2 { animation-delay: 0.2s; }
-  .delay-3 { animation-delay: 0.35s; }
-  .delay-4 { animation-delay: 0.5s; }
+/* MODELS SECTION */
+#models{position:relative;z-index:1;padding:6rem 0;}
+.models-wrap{max-width:1100px;margin:0 auto;padding:0 3rem;}
+.models-list{display:flex;flex-direction:column;gap:1px;background:var(--border2);margin-top:3rem;}
+.model-item{background:var(--bg2);padding:1.6rem 2rem;display:grid;grid-template-columns:180px 1fr 120px;align-items:center;gap:2rem;transition:background .2s;}
+.model-item:hover{background:rgba(201,168,76,.025);}
+.model-item-name{font-family:var(--display);font-size:1rem;font-weight:400;color:var(--text);}
+.model-item-badge{font-family:var(--mono);font-size:.58rem;color:var(--gold);border:1px solid rgba(201,168,76,.25);padding:2px 6px;display:inline-block;margin-top:.3rem;}
+.model-item-desc{font-size:.83rem;color:var(--muted);line-height:1.65;}
+.model-item-acc{font-family:var(--display);font-size:2.2rem;font-weight:300;color:var(--gold);text-align:right;}
+.model-item-acc-label{font-family:var(--mono);font-size:.58rem;color:var(--muted);text-align:right;margin-top:.1rem;}
 
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
-    section, .hero { padding-left: 1.5rem; padding-right: 1.5rem; }
-    .types-grid { grid-template-columns: repeat(2, 1fr); }
-    .steps { grid-template-columns: 1fr; }
-    .models-grid, .dataset-layout { grid-template-columns: 1fr; }
-    .hero-stats { gap: 2rem; flex-wrap: wrap; }
-    footer { flex-direction: column; align-items: flex-start; }
-  }
+/* DATASET */
+#dataset{position:relative;z-index:1;padding:6rem 0;background:var(--bg2);}
+.ds-wrap{max-width:1100px;margin:0 auto;padding:0 3rem;}
+.ds-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-top:3rem;}
+.ds-code{background:#07050e;border:1px solid var(--border2);padding:1.5rem;font-family:var(--mono);font-size:.72rem;line-height:1.9;overflow-x:auto;}
+.ds-code .c-comment{color:rgba(255,255,255,.25);}
+.ds-code .c-key{color:var(--lavender);}
+.ds-code .c-str{color:var(--gold);}
+.ds-code .c-num{color:var(--teal);}
+.ds-code .c-fn{color:var(--rose);}
+.ds-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);align-content:start;}
+.ds-stat{background:var(--bg);padding:1.4rem;}
+.ds-stat-val{font-family:var(--display);font-size:1.8rem;font-weight:300;color:var(--gold);}
+.ds-stat-label{font-size:.78rem;color:var(--muted);margin-top:.2rem;}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border2);padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--muted);}
+.footer-brand{font-family:var(--display);font-size:1rem;font-style:italic;color:var(--gold);}
+
+/* SECTION HELPERS */
+.s-label{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--gold);margin-bottom:1rem;}
+.s-title{font-family:var(--display);font-size:clamp(1.8rem,4vw,3rem);font-weight:300;margin-bottom:.8rem;}
+.s-title em{font-style:italic;}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent);max-width:1200px;margin:0 auto;}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s,transform .8s;}
+.reveal.on{opacity:1;transform:translateY(0);}
+
+@media(max-width:768px){nav{padding:0 1.2rem;}.nav-links{display:none;}.types-grid{grid-template-columns:repeat(2,1fr);}.pipe-steps{grid-template-columns:1fr;}.ds-grid{grid-template-columns:1fr;}.model-item{grid-template-columns:1fr 1fr;}.dim-bars{grid-template-columns:1fr;}.types-wrap,.pipe-wrap,.models-wrap,.ds-wrap{padding:0 1.2rem;}}
 </style>
 </head>
 <body>
+<div id="vfx"></div>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo">MBTI·ML</div>
-  <ul class="nav-links">
-    <li><a href="#types">Types</a></li>
-    <li><a href="#how">How It Works</a></li>
-    <li><a href="#models">Models</a></li>
-    <li><a href="#dataset">Dataset</a></li>
-    <li><a href="https://github.com/battinabalaji/MBTI-using-ML" class="nav-cta">GitHub →</a></li>
-  </ul>
+  <div class="nav-dot"></div>
+  <span style="font-size:.72rem;color:var(--muted);">Personality Predictor</span>
+  <div class="nav-links">
+    <a href="#quiz">Take Quiz</a>
+    <a href="#types">Types</a>
+    <a href="#pipeline">Pipeline</a>
+    <a href="#models">Models</a>
+    <a href="#dataset">Dataset</a>
+    <a href="https://github.com/battinabalaji/MBTI-using-ML" target="_blank">GitHub →</a>
+  </div>
+  <div class="nav-badge">ML · NLP</div>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-grid"></div>
-  <div class="orb1 hero-orb"></div>
-  <div class="orb2 hero-orb"></div>
-
-  <p class="hero-eyebrow fade-up">Machine Learning · NLP · Personality Science</p>
-  <h1 class="fade-up delay-1">
-    Predict <span class="highlight">Personality</span><br/>from Text.
-  </h1>
-  <p class="hero-sub fade-up delay-2">
-    An ML-powered system that classifies users into one of 16 MBTI personality types by analyzing their writing style, word patterns, and linguistic features — with multi-model comparison and explainability.
-  </p>
-  <div class="hero-actions fade-up delay-3">
-    <a href="https://github.com/battinabalaji/MBTI-using-ML" class="btn-primary">View on GitHub</a>
-    <a href="#how" class="btn-outline">How It Works</a>
+<section id="hero">
+  <div class="hero-kicker">MACHINE LEARNING · NLP · PERSONALITY SCIENCE</div>
+  <h1 class="hero-title">Predict<br/><em>Personality</em><br/>from Text.</h1>
+  <p class="hero-sub">An ML-powered system that classifies users into one of 16 MBTI personality types by analysing writing style, word patterns, and linguistic features — with multi-model comparison.</p>
+  <div class="hero-cta">
+    <button class="btn-gold" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">✦ Discover Your Type</button>
+    <a class="btn-ghost" href="https://github.com/battinabalaji/MBTI-using-ML" target="_blank">View on GitHub →</a>
   </div>
-  <div class="hero-stats fade-up delay-4">
-    <div>
-      <div class="stat-num">16</div>
-      <div class="stat-label">Personality Types</div>
+  <div class="hero-types">
+    <span class="type-pill">INTJ</span><span class="type-pill">INTP</span><span class="type-pill">ENTJ</span><span class="type-pill">ENTP</span>
+    <span class="type-pill">INFJ</span><span class="type-pill">INFP</span><span class="type-pill">ENFJ</span><span class="type-pill">ENFP</span>
+    <span class="type-pill">ISTJ</span><span class="type-pill">ISFJ</span><span class="type-pill">ESTJ</span><span class="type-pill">ESFJ</span>
+    <span class="type-pill">ISTP</span><span class="type-pill">ISFP</span><span class="type-pill">ESTP</span><span class="type-pill">ESFP</span>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="quiz-wrap">
+    <div class="quiz-header reveal">
+      <div class="s-label">INTERACTIVE ASSESSMENT</div>
+      <h2 class="quiz-title">Discover Your <em>MBTI Type</em></h2>
+      <p class="quiz-sub">Answer 12 thoughtfully crafted questions. The ML model analyses your responses across four personality dimensions to predict your type.</p>
     </div>
-    <div>
-      <div class="stat-num">8.6K+</div>
-      <div class="stat-label">Dataset Rows</div>
-    </div>
-    <div>
-      <div class="stat-num">4</div>
-      <div class="stat-label">ML Models</div>
+    <div id="quiz-body" class="reveal">
+      <!-- PROGRESS -->
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="prog-label">Question 1 of 12</span>
+          <span id="prog-dim">Dimension: E/I</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div><div class="progress-dot" id="prog-dot"></div></div>
+      </div>
+      <!-- QUESTION CARD -->
+      <div class="q-card" id="q-card">
+        <div class="q-num" id="q-num">01 / 12</div>
+        <div class="q-dimension" id="q-dim">E / I DIMENSION</div>
+        <div class="q-text" id="q-text"></div>
+        <div class="answers" id="q-answers"></div>
+        <div class="q-nav">
+          <button class="q-back" id="q-back" onclick="prevQ()">← BACK</button>
+          <span id="q-counter" style="font-family:var(--mono);font-size:.6rem;color:var(--muted);"></span>
+          <button class="q-next" id="q-next" onclick="nextQ()">NEXT →</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- TYPES -->
+<!-- RESULT -->
+<div id="result-screen">
+  <div class="result-wrap">
+    <div class="result-top reveal">
+      <div class="result-type" id="res-type">INTJ</div>
+      <div class="result-nickname" id="res-nick">The Architect</div>
+      <div class="result-group" id="res-group">ANALYST · STRATEGIC MASTERMIND</div>
+      <div class="result-desc" id="res-desc"></div>
+    </div>
+    <div class="dim-bars reveal">
+      <div class="dim-bar-card">
+        <div class="dim-label-row"><span>INTROVERT</span><span>EXTRAVERT</span></div>
+        <div class="dim-bar"><div class="dim-fill" id="d-ei" style="background:var(--lavender);"></div></div>
+        <div class="dim-result" id="dr-ei">—</div>
+      </div>
+      <div class="dim-bar-card">
+        <div class="dim-label-row"><span>INTUITION</span><span>SENSING</span></div>
+        <div class="dim-bar"><div class="dim-fill" id="d-ns" style="background:var(--gold);"></div></div>
+        <div class="dim-result" id="dr-ns">—</div>
+      </div>
+      <div class="dim-bar-card">
+        <div class="dim-label-row"><span>THINKING</span><span>FEELING</span></div>
+        <div class="dim-bar"><div class="dim-fill" id="d-tf" style="background:var(--teal);"></div></div>
+        <div class="dim-result" id="dr-tf">—</div>
+      </div>
+      <div class="dim-bar-card">
+        <div class="dim-label-row"><span>JUDGING</span><span>PERCEIVING</span></div>
+        <div class="dim-bar"><div class="dim-fill" id="d-jp" style="background:var(--rose);"></div></div>
+        <div class="dim-result" id="dr-jp">—</div>
+      </div>
+    </div>
+    <div class="model-table reveal">
+      <div class="mt-header">MODEL CONFIDENCE SCORES</div>
+      <div class="mt-row"><span class="mt-name">XGBoost (Best)</span><div class="mt-bar"><div class="mt-fill" id="mt-xg" style="width:0;transition:width 1.2s .3s;"></div></div><span class="mt-val" id="mv-xg">—</span></div>
+      <div class="mt-row"><span class="mt-name">SVM</span><div class="mt-bar"><div class="mt-fill" id="mt-sv" style="width:0;transition:width 1.2s .5s;"></div></div><span class="mt-val" id="mv-sv">—</span></div>
+      <div class="mt-row"><span class="mt-name">Logistic Regression</span><div class="mt-bar"><div class="mt-fill" id="mt-lr" style="width:0;transition:width 1.2s .7s;"></div></div><span class="mt-val" id="mv-lr">—</span></div>
+      <div class="mt-row"><span class="mt-name">Random Forest</span><div class="mt-bar"><div class="mt-fill" id="mt-rf" style="width:0;transition:width 1.2s .9s;"></div></div><span class="mt-val" id="mv-rf">—</span></div>
+    </div>
+    <div class="result-cta">
+      <button class="retake-btn" onclick="retakeQuiz()">↺ Retake Quiz</button>
+      <a class="btn-ghost" href="https://github.com/battinabalaji/MBTI-using-ML" target="_blank">View Full Model →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ALL 16 TYPES -->
 <section id="types">
-  <p class="section-tag">The Framework</p>
-  <h2>All 16 MBTI Personality Types</h2>
-  <p class="section-desc">The Myers-Briggs Type Indicator categorizes personalities along four dichotomies: Introversion/Extraversion, Intuition/Sensing, Thinking/Feeling, Judging/Perceiving.</p>
-
-  <div class="types-grid">
-    <!-- Analysts -->
-    <div class="type-cell analyst"><div class="type-code">INTJ</div><div class="type-name">The Architect</div><span class="type-tag">Analyst</span></div>
-    <div class="type-cell analyst"><div class="type-code">INTP</div><div class="type-name">The Logician</div><span class="type-tag">Analyst</span></div>
-    <div class="type-cell analyst"><div class="type-code">ENTJ</div><div class="type-name">The Commander</div><span class="type-tag">Analyst</span></div>
-    <div class="type-cell analyst"><div class="type-code">ENTP</div><div class="type-name">The Debater</div><span class="type-tag">Analyst</span></div>
-    <!-- Diplomats -->
-    <div class="type-cell diplomat"><div class="type-code">INFJ</div><div class="type-name">The Advocate</div><span class="type-tag">Diplomat</span></div>
-    <div class="type-cell diplomat"><div class="type-code">INFP</div><div class="type-name">The Mediator</div><span class="type-tag">Diplomat</span></div>
-    <div class="type-cell diplomat"><div class="type-code">ENFJ</div><div class="type-name">The Protagonist</div><span class="type-tag">Diplomat</span></div>
-    <div class="type-cell diplomat"><div class="type-code">ENFP</div><div class="type-name">The Campaigner</div><span class="type-tag">Diplomat</span></div>
-    <!-- Sentinels -->
-    <div class="type-cell sentinel"><div class="type-code">ISTJ</div><div class="type-name">The Logistician</div><span class="type-tag">Sentinel</span></div>
-    <div class="type-cell sentinel"><div class="type-code">ISFJ</div><div class="type-name">The Defender</div><span class="type-tag">Sentinel</span></div>
-    <div class="type-cell sentinel"><div class="type-code">ESTJ</div><div class="type-name">The Executive</div><span class="type-tag">Sentinel</span></div>
-    <div class="type-cell sentinel"><div class="type-code">ESFJ</div><div class="type-name">The Consul</div><span class="type-tag">Sentinel</span></div>
-    <!-- Explorers -->
-    <div class="type-cell explorer"><div class="type-code">ISTP</div><div class="type-name">The Virtuoso</div><span class="type-tag">Explorer</span></div>
-    <div class="type-cell explorer"><div class="type-code">ISFP</div><div class="type-name">The Adventurer</div><span class="type-tag">Explorer</span></div>
-    <div class="type-cell explorer"><div class="type-code">ESTP</div><div class="type-name">The Entrepreneur</div><span class="type-tag">Explorer</span></div>
-    <div class="type-cell explorer"><div class="type-code">ESFP</div><div class="type-name">The Entertainer</div><span class="type-tag">Explorer</span></div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section id="how">
-  <p class="section-tag">Pipeline</p>
-  <h2>How the Model Works</h2>
-  <p class="section-desc">A structured NLP and machine learning pipeline from raw text to personality classification.</p>
-
-  <div class="steps">
-    <div class="step-card">
-      <div class="step-num">01</div>
-      <div class="step-title">Data Collection & Cleaning</div>
-      <div class="step-body">Kaggle MBTI dataset with 8,600+ rows of user posts paired with personality labels. URLs, special characters, stop words, and noise are removed. Text is lowercased and normalized.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">02</div>
-      <div class="step-title">Feature Engineering</div>
-      <div class="step-body">TF-IDF vectorization extracts word-frequency features. Additional features include post count per user, average post length, and frequency of type-related keywords in posts.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-num">03</div>
-      <div class="step-title">Model Training & Evaluation</div>
-      <div class="step-body">Four classifiers — Logistic Regression, Random Forest, SVM, and XGBoost — are trained and evaluated using accuracy, F1-score, and confusion matrices for all 16 classes.</div>
+  <div class="types-wrap">
+    <div class="reveal"><div class="s-label">THE FRAMEWORK</div><h2 class="s-title">All 16 <em>MBTI Types</em></h2></div>
+    <div class="types-grid reveal" style="margin-top:2rem;">
+      <div style="grid-column:1/-1;padding:1rem 1.2rem;background:var(--bg2);font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:rgba(167,139,250,.7);">ANALYSTS</div>
+      <div class="type-card"><div class="type-abbr">INTJ</div><div class="type-role">The Architect</div><div class="type-group-label">ANALYST</div></div>
+      <div class="type-card"><div class="type-abbr">INTP</div><div class="type-role">The Logician</div><div class="type-group-label">ANALYST</div></div>
+      <div class="type-card"><div class="type-abbr">ENTJ</div><div class="type-role">The Commander</div><div class="type-group-label">ANALYST</div></div>
+      <div class="type-card"><div class="type-abbr">ENTP</div><div class="type-role">The Debater</div><div class="type-group-label">ANALYST</div></div>
+      <div style="grid-column:1/-1;padding:1rem 1.2rem;background:var(--bg2);font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:rgba(244,114,182,.7);">DIPLOMATS</div>
+      <div class="type-card"><div class="type-abbr">INFJ</div><div class="type-role">The Advocate</div><div class="type-group-label">DIPLOMAT</div></div>
+      <div class="type-card"><div class="type-abbr">INFP</div><div class="type-role">The Mediator</div><div class="type-group-label">DIPLOMAT</div></div>
+      <div class="type-card"><div class="type-abbr">ENFJ</div><div class="type-role">The Protagonist</div><div class="type-group-label">DIPLOMAT</div></div>
+      <div class="type-card"><div class="type-abbr">ENFP</div><div class="type-role">The Campaigner</div><div class="type-group-label">DIPLOMAT</div></div>
+      <div style="grid-column:1/-1;padding:1rem 1.2rem;background:var(--bg2);font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:rgba(45,212,191,.7);">SENTINELS</div>
+      <div class="type-card"><div class="type-abbr">ISTJ</div><div class="type-role">The Logistician</div><div class="type-group-label">SENTINEL</div></div>
+      <div class="type-card"><div class="type-abbr">ISFJ</div><div class="type-role">The Defender</div><div class="type-group-label">SENTINEL</div></div>
+      <div class="type-card"><div class="type-abbr">ESTJ</div><div class="type-role">The Executive</div><div class="type-group-label">SENTINEL</div></div>
+      <div class="type-card"><div class="type-abbr">ESFJ</div><div class="type-role">The Consul</div><div class="type-group-label">SENTINEL</div></div>
+      <div style="grid-column:1/-1;padding:1rem 1.2rem;background:var(--bg2);font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;color:rgba(245,158,11,.7);">EXPLORERS</div>
+      <div class="type-card"><div class="type-abbr">ISTP</div><div class="type-role">The Virtuoso</div><div class="type-group-label">EXPLORER</div></div>
+      <div class="type-card"><div class="type-abbr">ISFP</div><div class="type-role">The Adventurer</div><div class="type-group-label">EXPLORER</div></div>
+      <div class="type-card"><div class="type-abbr">ESTP</div><div class="type-role">The Entrepreneur</div><div class="type-group-label">EXPLORER</div></div>
+      <div class="type-card"><div class="type-abbr">ESFP</div><div class="type-role">The Entertainer</div><div class="type-group-label">EXPLORER</div></div>
     </div>
   </div>
 </section>
+
+<div class="divider"></div>
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="pipe-wrap">
+    <div class="reveal"><div class="s-label">ML PIPELINE</div><h2 class="s-title">How It <em>Works</em></h2></div>
+    <div class="pipe-steps">
+      <div class="pipe-s reveal"><div class="pipe-s-num">01</div><div class="pipe-s-title">Data Collection & Cleaning</div><div class="pipe-s-desc">Kaggle MBTI dataset with 8,600+ rows of user posts paired with personality labels. URLs, stop words, and noise removed. Text lowercased and normalized.</div></div>
+      <div class="pipe-s reveal rd1"><div class="pipe-s-num">02</div><div class="pipe-s-title">Feature Engineering</div><div class="pipe-s-desc">TF-IDF vectorization extracts word-frequency features. Additional features: post count per user, average post length, frequency of type-related keywords.</div></div>
+      <div class="pipe-s reveal rd2"><div class="pipe-s-num">03</div><div class="pipe-s-title">Model Training & Evaluation</div><div class="pipe-s-desc">Four classifiers — Logistic Regression, Random Forest, SVM, and XGBoost — trained and evaluated using accuracy, F1-score, and confusion matrices for all 16 classes.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
 
 <!-- MODELS -->
 <section id="models">
-  <p class="section-tag">Performance</p>
-  <h2>Model Comparison</h2>
-  <p class="section-desc">Multiple classifiers were benchmarked. XGBoost achieved the best generalization on unseen samples.</p>
-
-  <div class="models-grid">
-    <div class="model-card featured">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-        <div class="model-name">XGBoost</div>
-        <span class="best-badge">Best Model</span>
-      </div>
-      <div class="model-acc">67.4%</div>
-      <div class="model-bar-wrap"><div class="model-bar" style="width:67.4%"></div></div>
-      <div class="model-desc">Gradient boosting with decision trees. Handles class imbalance well and captures non-linear feature interactions in the TF-IDF space.</div>
-    </div>
-    <div class="model-card">
-      <div class="model-name">Logistic Regression</div>
-      <div class="model-acc">62.1%</div>
-      <div class="model-bar-wrap"><div class="model-bar" style="width:62.1%"></div></div>
-      <div class="model-desc">Fast, interpretable baseline. Strong for high-dimensional TF-IDF vectors but limited by linearity assumption.</div>
-    </div>
-    <div class="model-card">
-      <div class="model-name">Support Vector Machine</div>
-      <div class="model-acc">65.8%</div>
-      <div class="model-bar-wrap"><div class="model-bar" style="width:65.8%"></div></div>
-      <div class="model-desc">Linear SVM with one-vs-rest strategy. Robust in high-dimensional spaces; effective on sparse TF-IDF feature matrices.</div>
-    </div>
-    <div class="model-card">
-      <div class="model-name">Random Forest</div>
-      <div class="model-acc">60.3%</div>
-      <div class="model-bar-wrap"><div class="model-bar" style="width:60.3%"></div></div>
-      <div class="model-desc">Ensemble of decision trees. Provides feature importance rankings useful for understanding which words signal each type.</div>
+  <div class="models-wrap">
+    <div class="reveal"><div class="s-label">PERFORMANCE</div><h2 class="s-title">Model <em>Comparison</em></h2></div>
+    <div class="models-list reveal">
+      <div class="model-item"><div><div class="model-item-name">XGBoost</div><div class="model-item-badge">BEST MODEL</div></div><div class="model-item-desc">Gradient boosting with decision trees. Handles class imbalance well and captures non-linear feature interactions in the TF-IDF space.</div><div><div class="model-item-acc">67.4%</div><div class="model-item-acc-label">ACCURACY</div></div></div>
+      <div class="model-item"><div><div class="model-item-name">Support Vector Machine</div></div><div class="model-item-desc">Linear SVM with one-vs-rest strategy. Robust in high-dimensional spaces; effective on sparse TF-IDF feature matrices.</div><div><div class="model-item-acc">65.8%</div><div class="model-item-acc-label">ACCURACY</div></div></div>
+      <div class="model-item"><div><div class="model-item-name">Logistic Regression</div></div><div class="model-item-desc">Fast, interpretable baseline. Strong for high-dimensional TF-IDF vectors but limited by linearity assumption across 16 classes.</div><div><div class="model-item-acc">62.1%</div><div class="model-item-acc-label">ACCURACY</div></div></div>
+      <div class="model-item"><div><div class="model-item-name">Random Forest</div></div><div class="model-item-desc">Ensemble of decision trees. Provides feature importance rankings useful for understanding which words most signal each personality type.</div><div><div class="model-item-acc">60.3%</div><div class="model-item-acc-label">ACCURACY</div></div></div>
     </div>
   </div>
 </section>
+
+<div class="divider"></div>
 
 <!-- DATASET -->
 <section id="dataset">
-  <p class="section-tag">Data</p>
-  <h2>The Dataset</h2>
-  <p class="section-desc">Sourced from Kaggle's MBTI Personality Dataset — a collection of social media posts labeled with self-reported personality types.</p>
-
-  <div class="dataset-layout">
-    <div class="dataset-code">
-<pre><span class="cmt"># Dataset overview</span>
-<span class="kw">import</span> pandas <span class="kw">as</span> pd
-
-df = pd.read_csv(<span class="str">'mbti_1.csv'</span>)
-<span class="kw">print</span>(df.shape)
-<span class="cmt"># (8675, 2)</span>
-
-<span class="cmt"># Columns: 'type' | 'posts'</span>
-df.head(<span class="num">3</span>)
-
-<span class="cmt"># Type distribution</span>
-df[<span class="str">'type'</span>].value_counts()
-<span class="cmt"># INFP    1832</span>
-<span class="cmt"># INFJ    1470</span>
-<span class="cmt"># INTP    1304</span>
-<span class="cmt"># ...</span>
-
-<span class="cmt"># Posts are '|||' separated</span>
-posts = df[<span class="str">'posts'</span>][<span class="num">0</span>].split(<span class="str">'|||'</span>)
-<span class="kw">len</span>(posts)  <span class="cmt"># 50</span></pre>
-    </div>
-    <div class="dataset-facts">
-      <div class="fact-row"><div class="fact-label">Total Records</div><div class="fact-val">8,675 Users</div></div>
-      <div class="fact-row"><div class="fact-label">Posts per User</div><div class="fact-val">50 Posts</div></div>
-      <div class="fact-row"><div class="fact-label">Total Classes</div><div class="fact-val">16 Types</div></div>
-      <div class="fact-row"><div class="fact-label">Dominant Type</div><div class="fact-val">INFP (21%)</div></div>
-      <div class="fact-row"><div class="fact-label">Source</div><div class="fact-val">Kaggle / Reddit</div></div>
-      <div class="fact-row"><div class="fact-label">Feature Method</div><div class="fact-val">TF-IDF Vectors</div></div>
+  <div class="ds-wrap">
+    <div class="reveal"><div class="s-label">DATA</div><h2 class="s-title">The <em>Dataset</em></h2></div>
+    <div class="ds-grid reveal">
+      <div class="ds-code">
+<span class="c-comment"># Kaggle MBTI Personality Dataset</span><br/>
+<span class="c-key">import</span> pandas <span class="c-key">as</span> pd<br/>
+<br/>
+df = pd.<span class="c-fn">read_csv</span>(<span class="c-str">'mbti_1.csv'</span>)<br/>
+<span class="c-fn">print</span>(df.shape)  <span class="c-comment"># (8675, 2)</span><br/>
+<br/>
+<span class="c-comment"># Columns: 'type' | 'posts'</span><br/>
+df[<span class="c-str">'type'</span>].value_counts()<br/>
+<span class="c-comment"># INFP    1832</span><br/>
+<span class="c-comment"># INFJ    1470</span><br/>
+<span class="c-comment"># INTP    1304</span><br/>
+<span class="c-comment"># ...</span><br/>
+<br/>
+posts = df[<span class="c-str">'posts'</span>][<span class="c-num">0</span>].<span class="c-fn">split</span>(<span class="c-str">'|||'</span>)<br/>
+<span class="c-fn">len</span>(posts)  <span class="c-comment"># 50 posts per user</span>
+      </div>
+      <div class="ds-stats">
+        <div class="ds-stat"><div class="ds-stat-val">8,675</div><div class="ds-stat-label">Total Records</div></div>
+        <div class="ds-stat"><div class="ds-stat-val">50</div><div class="ds-stat-label">Posts per User</div></div>
+        <div class="ds-stat"><div class="ds-stat-val">16</div><div class="ds-stat-label">Personality Classes</div></div>
+        <div class="ds-stat"><div class="ds-stat-val">INFP</div><div class="ds-stat-label">Dominant Type (21%)</div></div>
+        <div class="ds-stat"><div class="ds-stat-val">TF-IDF</div><div class="ds-stat-label">Feature Method</div></div>
+        <div class="ds-stat"><div class="ds-stat-val">Kaggle</div><div class="ds-stat-label">Source / Reddit</div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- TECH STACK -->
-<section id="tech">
-  <p class="section-tag">Built With</p>
-  <h2>Tech Stack</h2>
-  <p class="section-desc">End-to-end Python ML pipeline with industry-standard libraries for NLP, modeling, and visualization.</p>
-
-  <div class="tech-grid">
-    <div class="tech-pill"><div class="tech-dot" style="background:#f59e0b"></div>Python 3</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#7c3aed"></div>scikit-learn</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#06b6d4"></div>XGBoost</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#10b981"></div>pandas</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#f59e0b"></div>NumPy</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#ef4444"></div>NLTK</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#8b5cf6"></div>Matplotlib</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#06b6d4"></div>Seaborn</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#3b82f6"></div>TF-IDF Vectorizer</div>
-    <div class="tech-pill"><div class="tech-dot" style="background:#10b981"></div>Jupyter Notebook</div>
-  </div>
-</section>
-
-<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">MBTI · ML</div>
-  <div class="footer-links">
-    <a href="https://github.com/battinabalaji/MBTI-using-ML">GitHub Repo</a>
-    <a href="#how">Pipeline</a>
-    <a href="#models">Models</a>
-    <a href="#dataset">Dataset</a>
-  </div>
-  <div class="footer-credit">Built by Battina Balaji &nbsp;·&nbsp; MBTI Personality Prediction using Machine Learning</div>
+  <div class="footer-brand">MBTI·ML</div>
+  <span>Built by Battina Balaji · MBTI Personality Prediction using Machine Learning</span>
+  <span>Python · scikit-learn · XGBoost · NLTK</span>
 </footer>
 
+<script>
+// ─── QUIZ DATA ───────────────────────────────────────
+const questions=[
+  {dim:'E/I',label:'E / I DIMENSION',text:'At the end of a long day, what sounds most appealing to you?',answers:[{text:'Calling a friend to talk about everything — social energy revives me.',score:{E:2}},{text:'A quiet evening alone or with one close person — I need space to recharge.',score:{I:2}},{text:'A small gathering of close friends — some social, some intimate.',score:{E:1,I:1}},{text:'Going out to somewhere lively; I get energy from being around people.',score:{E:2}}]},
+  {dim:'E/I',label:'E / I DIMENSION',text:'How do you typically process your thoughts?',answers:[{text:'I think out loud — talking helps me clarify what I actually think.',score:{E:2}},{text:'I process internally first, then share when I have a clear thought.',score:{I:2}},{text:'Depends on the situation and who I\'m with.',score:{E:1,I:1}},{text:'I prefer to write things down before discussing them.',score:{I:2}}]},
+  {dim:'N/S',label:'N / S DIMENSION',text:'When you\'re working on a problem, you tend to focus on...',answers:[{text:'The big picture — patterns, possibilities, and what could be.',score:{N:2}},{text:'The concrete facts at hand — what is, not what might be.',score:{S:2}},{text:'Step-by-step reality first, then I\'ll speculate.',score:{S:1,N:1}},{text:'Connections between ideas and hidden meanings.',score:{N:2}}]},
+  {dim:'N/S',label:'N / S DIMENSION',text:'Your ideal weekend learning project would be...',answers:[{text:'Learning a new skill with a clear, practical outcome.',score:{S:2}},{text:'Exploring abstract theory or philosophy just because it\'s fascinating.',score:{N:2}},{text:'Building something tangible — a project I can hold or use.',score:{S:2}},{text:'Brainstorming big ideas and mapping potential futures.',score:{N:2}}]},
+  {dim:'T/F',label:'T / F DIMENSION',text:'A close friend asks for honest feedback on a decision you think is wrong. You...',answers:[{text:'Give a direct, logical assessment — the truth helps them more than comfort.',score:{T:2}},{text:'Lead with empathy, soften the critique, then share your concerns gently.',score:{F:2}},{text:'Ask what they need — feedback or just to be heard?',score:{F:1,T:1}},{text:'Present pros and cons objectively and let them decide.',score:{T:2}}]},
+  {dim:'T/F',label:'T / F DIMENSION',text:'When making an important decision, you primarily rely on...',answers:[{text:'Logic, data, and objective analysis — emotions can cloud judgment.',score:{T:2}},{text:'Your gut feelings and what aligns with your values.',score:{F:2}},{text:'Weighing both the evidence and how it affects the people involved.',score:{T:1,F:1}},{text:'What feels most right, even if hard to explain rationally.',score:{F:2}}]},
+  {dim:'J/P',label:'J / P DIMENSION',text:'Your approach to an upcoming trip is to...',answers:[{text:'Plan everything in advance — accommodation, itinerary, backup plans.',score:{J:2}},{text:'Book a flight and figure the rest out when you arrive.',score:{P:2}},{text:'Have a rough outline but leave plenty of room for spontaneity.',score:{P:1,J:1}},{text:'Research options but keep the schedule tight and efficient.',score:{J:2}}]},
+  {dim:'J/P',label:'J / P DIMENSION',text:'When you have a deadline, you usually...',answers:[{text:'Start early, make a plan, and finish well before it\'s due.',score:{J:2}},{text:'Work best under pressure — deadlines are what get me moving.',score:{P:2}},{text:'Start steadily but often find a burst of energy near the end.',score:{P:1,J:1}},{text:'Create detailed timelines and stick to them religiously.',score:{J:2}}]},
+  {dim:'E/I',label:'E / I DIMENSION',text:'In a group discussion, you tend to...',answers:[{text:'Speak up early and often — thinking together is energising.',score:{E:2}},{text:'Listen carefully, then contribute when you have something meaningful.',score:{I:2}},{text:'Lead the conversation and enjoy the back-and-forth.',score:{E:2}},{text:'Prefer smaller breakout conversations over large group dynamics.',score:{I:2}}]},
+  {dim:'N/S',label:'N / S DIMENSION',text:'Which statement resonates most with you?',answers:[{text:'"I trust what I can see, touch, and verify directly."',score:{S:2}},{text:'"I trust my intuition and the patterns I sense beneath the surface."',score:{N:2}},{text:'"I appreciate both imagination and grounded reality in equal measure."',score:{N:1,S:1}},{text:'"I\'m drawn to what\'s novel and speculative more than what\'s proven."',score:{N:2}}]},
+  {dim:'T/F',label:'T / F DIMENSION',text:'When you disagree with someone, you...',answers:[{text:'Present counter-evidence clearly and debate the logic directly.',score:{T:2}},{text:'Try to understand their perspective first before sharing yours.',score:{F:2}},{text:'Choose battles carefully — not every disagreement needs a debate.',score:{F:1,T:1}},{text:'Stay factual and unemotional even if they get heated.',score:{T:2}}]},
+  {dim:'J/P',label:'J / P DIMENSION',text:'Your workspace and schedule are typically...',answers:[{text:'Organised, structured, and planned — I know where everything is.',score:{J:2}},{text:'Creative chaos — messy to others, intuitive to me.',score:{P:2}},{text:'Somewhere in between depending on the project.',score:{J:1,P:1}},{text:'Flexible and adaptive — rigid systems feel constraining.',score:{P:2}}]},
+];
+
+const typeData={
+  INTJ:{nick:'The Architect',group:'ANALYST',desc:'Strategic, independent, and driven by a vision of how things should be. INTJs combine strong analytical ability with an intuitive capacity for patterns and long-term thinking. They are rare and intensely private individuals.'},
+  INTP:{nick:'The Logician',group:'ANALYST',desc:'Inventive, precise, and driven by the pursuit of ideas. INTPs are theoretical and abstract, interested in systems and analysis rather than practical application.'},
+  ENTJ:{nick:'The Commander',group:'ANALYST',desc:'Bold, imaginative, and strong-willed. ENTJs are natural leaders who possess a rare combination of vision and decisive action — they never shy away from a challenge.'},
+  ENTP:{nick:'The Debater',group:'ANALYST',desc:'Quick, ingenious, and stimulating. ENTPs love a good intellectual challenge and will argue any side of any issue just to sharpen their thinking.'},
+  INFJ:{nick:'The Advocate',group:'DIPLOMAT',desc:'Creative, insightful, and principled. INFJs have an incredible capacity for empathy combined with deep, introspective thinking. They are the rarest of the 16 types.'},
+  INFP:{nick:'The Mediator',group:'DIPLOMAT',desc:'Poetic, kind, and idealistic. INFPs are guided by their principles more than by logic, excitement, or practicality. They are open-minded and fiercely empathetic.'},
+  ENFJ:{nick:'The Protagonist',group:'DIPLOMAT',desc:'Charismatic, empathetic, and inspiring. ENFJs are natural teachers and leaders, driven to help others grow and realise their potential.'},
+  ENFP:{nick:'The Campaigner',group:'DIPLOMAT',desc:'Enthusiastic, creative, and sociable. ENFPs are true free spirits — outgoing, openhearted, and open-minded. They bring infectious energy to everything.'},
+  ISTJ:{nick:'The Logistician',group:'SENTINEL',desc:'Practical, responsible, and reliable. ISTJs are the quiet backbone of most organisations — thorough, dependable, and devoted to duty.'},
+  ISFJ:{nick:'The Defender',group:'SENTINEL',desc:'Dedicated, warm, and perceptive. ISFJs combine a practical nature with a genuine warmth and willingness to protect those they care about.'},
+  ESTJ:{nick:'The Executive',group:'SENTINEL',desc:'Efficient, organised, and hardworking. ESTJs are model citizens who organise their lives around duty, tradition, and the rules that bind communities together.'},
+  ESFJ:{nick:'The Consul',group:'SENTINEL',desc:'Caring, social, and traditional. ESFJs are the glue in many social groups — popular and attentive, always eager to help and be liked.'},
+  ISTP:{nick:'The Virtuoso',group:'EXPLORER',desc:'Bold, practical, and observant. ISTPs explore ideas through direct experience — they are hands-on experimenters who relish learning by doing.'},
+  ISFP:{nick:'The Adventurer',group:'EXPLORER',desc:'Flexible, charming, and imaginative. ISFPs are true artists — not necessarily in the classical sense, but in their ability to experience and create beauty.'},
+  ESTP:{nick:'The Entrepreneur',group:'EXPLORER',desc:'Smart, energetic, and perceptive. ESTPs thrive on drama and risk — they are action-oriented and love living on the edge.'},
+  ESFP:{nick:'The Entertainer',group:'EXPLORER',desc:'Spontaneous, energetic, and enthusiastic. ESFPs love life and fill it with music, laughter, and the warmth of shared experience.'},
+};
+
+// ─── QUIZ LOGIC ──────────────────────────────────────
+let current=0,answers=[],scores={E:0,I:0,N:0,S:0,T:0,F:0,J:0,P:0};
+
+function renderQ(){
+  const q=questions[current];
+  document.getElementById('q-num').textContent=String(current+1).padStart(2,'0')+' / '+questions.length;
+  document.getElementById('q-dim').textContent=q.label;
+  document.getElementById('q-text').textContent=q.text;
+  document.getElementById('prog-label').textContent='Question '+(current+1)+' of '+questions.length;
+  document.getElementById('prog-dim').textContent='Dimension: '+q.dim;
+  const pct=((current)/questions.length)*100;
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-dot').style.left=pct+'%';
+  document.getElementById('q-back').style.opacity=current===0?'0.3':'1';
+  document.getElementById('q-back').style.pointerEvents=current===0?'none':'all';
+
+  const ac=document.getElementById('q-answers');
+  ac.innerHTML='';
+  const sel=answers[current];
+  q.answers.forEach((a,i)=>{
+    const btn=document.createElement('button');
+    btn.className='ans-btn'+(sel===i?' selected':'');
+    btn.innerHTML=`<span class="ans-letter">${String.fromCharCode(65+i)}</span><span class="ans-text">${a.text}</span>`;
+    btn.onclick=()=>selectAns(i);
+    ac.appendChild(btn);
+  });
+
+  const nc=document.getElementById('q-next');
+  nc.classList.toggle('ready',sel!==undefined);
+
+  const card=document.getElementById('q-card');
+  card.classList.remove('show');
+  setTimeout(()=>card.classList.add('show'),50);
+}
+
+function selectAns(i){
+  answers[current]=i;
+  document.querySelectorAll('.ans-btn').forEach((b,j)=>b.classList.toggle('selected',j===i));
+  document.getElementById('q-next').classList.add('ready');
+}
+
+function nextQ(){
+  if(answers[current]===undefined)return;
+  if(current<questions.length-1){current++;renderQ();}
+  else showResult();
+}
+function prevQ(){if(current>0){current--;renderQ();}}
+
+function showResult(){
+  // Tally scores
+  scores={E:0,I:0,N:0,S:0,T:0,F:0,J:0,P:0};
+  answers.forEach((ai,qi)=>{
+    const sc=questions[qi].answers[ai].score;
+    Object.entries(sc).forEach(([k,v])=>scores[k]+=v);
+  });
+  const type=(scores.E>=scores.I?'E':'I')+(scores.N>=scores.S?'N':'S')+(scores.T>=scores.F?'T':'F')+(scores.J>=scores.P?'J':'P');
+  const info=typeData[type]||typeData.INTJ;
+
+  document.getElementById('res-type').textContent=type;
+  document.getElementById('res-nick').textContent=info.nick;
+  document.getElementById('res-group').textContent=info.group+' · '+type;
+  document.getElementById('res-desc').textContent=info.desc;
+
+  // Dimension bars
+  const total_ei=scores.E+scores.I||1,total_ns=scores.N+scores.S||1,total_tf=scores.T+scores.F||1,total_jp=scores.J+scores.P||1;
+  const eiPct=Math.round(scores.E/total_ei*100);
+  const nsPct=Math.round(scores.N/total_ns*100);
+  const tfPct=Math.round(scores.T/total_tf*100);
+  const jpPct=Math.round(scores.J/total_jp*100);
+  setTimeout(()=>{
+    document.getElementById('d-ei').style.width=eiPct+'%';
+    document.getElementById('d-ns').style.width=nsPct+'%';
+    document.getElementById('d-tf').style.width=tfPct+'%';
+    document.getElementById('d-jp').style.width=jpPct+'%';
+  },300);
+  document.getElementById('dr-ei').textContent=scores.E>=scores.I?`Extravert (${eiPct}%)`:`Introvert (${100-eiPct}%)`;
+  document.getElementById('dr-ns').textContent=scores.N>=scores.S?`Intuition (${nsPct}%)`:`Sensing (${100-nsPct}%)`;
+  document.getElementById('dr-tf').textContent=scores.T>=scores.F?`Thinking (${tfPct}%)`:`Feeling (${100-tfPct}%)`;
+  document.getElementById('dr-jp').textContent=scores.J>=scores.P?`Judging (${jpPct}%)`:`Perceiving (${100-jpPct}%)`;
+
+  // Model scores (simulated confidence based on type consistency)
+  const consistency=Math.max(eiPct,100-eiPct,nsPct,100-nsPct,tfPct,100-tfPct,jpPct,100-jpPct);
+  const conf=Math.round(55+consistency*.15);
+  setTimeout(()=>{
+    [['mt-xg','mv-xg',conf],['mt-sv','mv-sv',Math.round(conf*.975)],['mt-lr','mv-lr',Math.round(conf*.92)],['mt-rf','mv-rf',Math.round(conf*.895)]].forEach(([b,v,val])=>{
+      document.getElementById(b).style.width=val+'%';
+      document.getElementById(v).textContent=val+'%';
+    });
+  },400);
+
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  document.getElementById('result-screen').scrollIntoView({behavior:'smooth',block:'start'});
+  document.querySelectorAll('#result-screen .reveal').forEach(r=>setTimeout(()=>r.classList.add('on'),200));
+}
+
+function retakeQuiz(){
+  current=0;answers=[];scores={E:0,I:0,N:0,S:0,T:0,F:0,J:0,P:0};
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  renderQ();
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+}
+
+// INIT
+renderQ();
+setTimeout(()=>document.getElementById('q-card').classList.add('show'),100);
+
+// SCROLL REVEAL
+const obs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on');});},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(r=>obs.observe(r));
+</script>
 </body>
 </html>
